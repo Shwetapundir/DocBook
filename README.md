@@ -261,14 +261,6 @@ Patient → Chatbot → LangChain Tool → Doctor Database → Slot Engine → A
 
 ---
 
-# 📌 Resume-Ready Highlights
-
-* Built AI-assisted healthcare chatbot for automated appointment booking and rescheduling
-* Implemented doctor slot validation and symptom-based doctor recommendation
-* Designed secure full-stack architecture with PostgreSQL transaction safety
-
----
-
 # 🙌 Acknowledgements
 
 Built using React, Node.js, Express, PostgreSQL, and LangChain.
