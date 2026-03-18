@@ -1,149 +1,153 @@
-# 🏥 DocBook — Doctor Appointment Booking System
+# DocBook — AI-Powered Doctor Appointment Booking System
 
-A full-stack web application that allows patients to find doctors, book appointments, and chat with their doctors in real time.
-
----
-
-## 🌟 Features
-
-### 👤 Authentication
-- JWT-based secure authentication
-- Role-based access control (Patient, Doctor, Admin)
-- Bcrypt password hashing
-
-### 🧑‍⚕️ Doctor Management
-- Doctors register and submit profiles for admin approval
-- Specialization, qualification, experience, fee, hospital info
-- Weekly availability slot management
-
-### 📅 Appointment Booking
-- Patients browse and filter doctors by specialization
-- Real-time slot availability checking
-- Double-booking prevention with PostgreSQL transactions
-- Appointment status tracking (Pending → Confirmed → Completed)
-
-### 💬 Real-Time Chat
-- Patients can chat with doctors they have appointments with
-- Message polling every 3 seconds for near real-time updates
-- Unread message badge in navbar
-- Message read receipts
-
-### 🛡️ Admin Panel
-- Approve or reject doctor registrations
-- Manage all users (activate/deactivate)
-- Platform statistics dashboard
+A full-stack healthcare web application that enables patients to discover doctors, book appointments, reschedule appointments, and communicate with doctors in real time. The platform also includes an AI-powered chatbot that automates appointment booking and rescheduling workflows.
 
 ---
 
-## 🛠️ Tech Stack
+# 🌟 Core Features
 
-| Layer       | Technology                        |
-|-------------|-----------------------------------|
-| Frontend    | React.js, React Router, Axios     |
-| Backend     | Node.js, Express.js               |
-| Database    | PostgreSQL                        |
-| Auth        | JWT, Bcrypt                       |
-| Styling     | Custom CSS (Sora + DM Sans fonts) |
-| Real-time   | Polling (3s interval)             |
+## 👤 Authentication & Authorization
+
+* JWT-based secure authentication
+* Role-based access control (**Patient / Doctor / Admin**)
+* Bcrypt password hashing
+* Protected routes for all sensitive operations
 
 ---
 
-## 📁 Project Structure
+## 🧑‍⚕️ Doctor Management
 
-```
-doctor-booking/
+* Doctors register and submit profiles for admin approval
+* Profile includes specialization, qualification, experience, fee, and hospital details
+* Weekly doctor availability slot management
+* Admin approval before doctor becomes visible to patients
+
+---
+
+## 📅 Appointment Booking
+
+* Patients browse and filter doctors by specialization
+* Real-time slot availability checking
+* Double-booking prevention using PostgreSQL transactions
+* Appointment lifecycle tracking (**Pending → Confirmed → Completed**)
+
+---
+
+## 🔄 Appointment Rescheduling (AI Chatbot Flow)
+
+* Logged-in patients can reschedule only upcoming appointments
+* Fetches patient-specific appointments
+* Displays available slots for selected doctor and date
+* Excludes already booked slots
+* Updates appointment after confirmation
+
+### Backend Tools Used
+
+* `getUpcomingAppointments(patientId)`
+* `getAvailableSlots(doctorId, date)`
+* `rescheduleAppointment(appointmentId, newDate, newSlot)`
+
+---
+
+## 🤖 AI Chatbot Appointment Booking
+
+* Patient describes symptoms
+* LLM maps symptoms to disease category
+* Fetches doctors by specialization
+* Shows available slots
+* Confirms and creates appointment
+
+### Example Mapping
+
+* Fever + cough → General Physician
+* Tooth pain → Dentist
+* Skin rash → Dermatologist
+
+---
+
+## 💬 Real-Time Chat
+
+* Patients can chat with doctors after appointment booking
+* Polling every 3 seconds for near real-time updates
+* Unread message notification badge
+* Read receipts support
+
+---
+
+## 🛡️ Admin Panel
+
+* Approve / reject doctor registrations
+* Manage users (activate/deactivate)
+* Platform statistics dashboard
+
+---
+
+# 🛠️ Tech Stack
+
+| Layer          | Technology                    |
+| -------------- | ----------------------------- |
+| Frontend       | React.js, React Router, Axios |
+| Backend        | Node.js, Express.js           |
+| Database       | PostgreSQL                    |
+| Authentication | JWT, Bcrypt                   |
+| AI Integration | LangChain / LLM               |
+| Styling        | Custom CSS                    |
+| Real-time      | Polling (3s interval)         |
+
+---
+
+# 📁 Project Structure
+
+```bash
+DOCBOOK/
 ├── backend/
 │   ├── config/
-│   │   ├── db.js               # PostgreSQL connection
-│   │   ├── schema.sql          # Database schema
-│   │   └── migrate.js          # Migration script
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── doctorController.js
-│   │   ├── appointmentController.js
-│   │   ├── adminController.js
-│   │   └── chatController.js
 │   ├── middleware/
-│   │   ├── auth.js             # JWT middleware
-│   │   ├── errorHandler.js
-│   │   └── validate.js         # Input validation
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── doctorRoutes.js
-│   │   ├── appointmentRoutes.js
-│   │   ├── adminRoutes.js
-│   │   └── chatRoutes.js
-│   ├── server.js
-│   └── package.json
+│   ├── services/
+│   ├── chatbot-tools/
+│   └── server.js
 │
 └── frontend/
     ├── public/
-    │   └── index.html
     └── src/
         ├── api/
-        │   ├── axios.js            # Axios instance with interceptors
-        │   └── services.js         # API service functions
         ├── components/
-        │   └── common/
-        │       ├── Navbar.jsx
-        │       └── ProtectedRoute.jsx
         ├── context/
-        │   └── AuthContext.js      # Global auth state
         ├── pages/
-        │   ├── LoginPage.jsx
-        │   ├── RegisterPage.jsx
-        │   ├── DoctorListPage.jsx
-        │   ├── BookAppointmentPage.jsx
-        │   ├── ChatPage.jsx
-        │   ├── patient/
-        │   │   └── PatientDashboard.jsx
-        │   ├── doctor/
-        │   │   ├── DoctorDashboard.jsx
-        │   │   └── DoctorProfilePage.jsx
-        │   └── admin/
-        │       └── AdminDashboard.jsx
-        ├── App.js
-        └── index.css
+        └── App.js
 ```
 
 ---
 
-## 🚀 Getting Started
+# 🚀 Getting Started
 
-### Prerequisites
-- Node.js v16+
-- PostgreSQL v14+
-- npm
+## Prerequisites
+
+* Node.js v16+
+* PostgreSQL v14+
+* npm
 
 ---
 
-### 1. Clone the repository
+## Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/doctor-booking.git
-cd doctor-booking
+git clone https://github.com/Shwetapundir/DocBook.git
+cd DOCBOOK
 ```
 
 ---
 
-### 2. Setup the database
-
-Open PostgreSQL and create the database:
-
-```sql
-CREATE DATABASE doctor_booking;
-```
-
----
-
-### 3. Setup the backend
+## Backend Setup
 
 ```bash
 cd backend
 npm install
 ```
 
-Create a `.env` file in the `backend` folder:
+Create `.env`
 
 ```env
 PORT=5000
@@ -154,26 +158,27 @@ DB_USER=postgres
 DB_PASSWORD=your_postgres_password
 JWT_SECRET=your_super_secret_jwt_key
 JWT_EXPIRES_IN=7d
-NODE_ENV=development
 ```
 
-Run the database migration:
+Run migration:
 
 ```bash
 node config/migrate.js
 ```
 
-Start the backend server:
+Start backend:
 
 ```bash
 npm run dev
 ```
 
-Backend runs on **http://localhost:5000**
+Backend runs at:
+
+`http://localhost:5000`
 
 ---
 
-### 4. Setup the frontend
+## Frontend Setup
 
 ```bash
 cd frontend
@@ -181,142 +186,89 @@ npm install
 npm start
 ```
 
-Frontend runs on **http://localhost:3000**
+Frontend runs at:
+
+`http://localhost:3000`
 
 ---
 
-## 🔐 Default Admin Account
+# 🔐 Default Admin Account
 
-```
-Email:    admin@docbook.com
-Password: Admin@123
-```
+Email: `admin@docbook.com`
+Password: `Admin@123`
 
 ---
 
-## 📡 API Endpoints
+# 📡 Major API Modules
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login |
-| GET  | `/api/auth/me` | Get current user |
+## Auth
 
-### Doctors
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET  | `/api/doctors` | List all approved doctors |
-| GET  | `/api/doctors/:id` | Get doctor details |
-| POST | `/api/doctors/profile` | Create/update doctor profile |
-| GET  | `/api/doctors/:id/availability` | Get available slots |
+* Register
+* Login
+* Current user
 
-### Appointments
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/appointments` | Book appointment |
-| GET  | `/api/appointments` | Get my appointments |
-| PATCH | `/api/appointments/:id/cancel` | Cancel appointment |
-| PATCH | `/api/appointments/:id/status` | Update status (doctor) |
+## Doctors
 
-### Chat
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET  | `/api/chat/conversations` | Get my conversations |
-| POST | `/api/chat/conversations` | Start a conversation |
-| GET  | `/api/chat/conversations/:id/messages` | Get messages |
-| POST | `/api/chat/conversations/:id/messages` | Send a message |
+* List approved doctors
+* Doctor profile
+* Availability
 
-### Admin
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET  | `/api/admin/stats` | Platform statistics |
-| GET  | `/api/admin/doctors/pending` | Pending doctor approvals |
-| PATCH | `/api/admin/doctors/:id/approve` | Approve doctor |
-| PATCH | `/api/admin/doctors/:id/reject` | Reject doctor |
-| GET  | `/api/admin/users` | All users |
-| PATCH | `/api/admin/users/:id/toggle` | Activate/deactivate user |
+## Appointments
+
+* Book appointment
+* View appointments
+* Cancel / update status
+
+## Chat
+
+* Conversations
+* Send / receive messages
+
+## Admin
+
+* Approvals
+* User control
+* Statistics
 
 ---
 
-## 🗄️ Database Schema
+# 🗄️ Core Database Modules
 
-```
-users
-├── id (UUID)
-├── full_name
-├── email (unique)
-├── password (hashed)
-├── role (patient/doctor/admin)
-├── phone
-├── is_active
-└── created_at
-
-doctor_profiles
-├── id (UUID)
-├── user_id → users
-├── specialization
-├── qualification
-├── experience_years
-├── consultation_fee
-├── hospital_name
-├── bio
-├── is_approved
-└── created_at
-
-availability
-├── id (UUID)
-├── doctor_id → users
-├── day_of_week (0-6)
-├── start_time
-├── end_time
-└── is_active
-
-appointments
-├── id (UUID)
-├── patient_id → users
-├── doctor_id → users
-├── appointment_date
-├── start_time
-├── end_time
-├── status (pending/confirmed/completed/cancelled)
-├── reason
-├── notes
-└── created_at
-
-conversations
-├── id (UUID)
-├── patient_id → users
-├── doctor_id → users
-├── appointment_id → appointments
-├── last_message
-└── last_message_at
-
-messages
-├── id (UUID)
-├── conversation_id → conversations
-├── sender_id → users
-├── message
-├── is_read
-└── created_at
-```
+* users
+* doctor_profiles
+* availability
+* appointments
+* conversations
+* messages
 
 ---
 
-## 🔒 Security Features
+# 🔒 Security Features
 
-- JWT authentication with expiry
-- Bcrypt password hashing (10 rounds)
-- Role-based route protection
-- Input validation on all endpoints
-- CORS protection
-- Helmet.js security headers
-- Rate limiting on auth routes
-- SERIALIZABLE transactions for booking
-- Chat access restricted to users with appointments
+* JWT expiry-based authentication
+* Bcrypt hashing
+* Role-based middleware
+* Input validation
+* Helmet.js security headers
+* Rate limiting
+* PostgreSQL SERIALIZABLE transactions
 
 ---
 
-## 🙌 Acknowledgements
+# 💡 AI Chatbot Architecture
 
-Built with React, Node.js, Express, and PostgreSQL.
+Patient → Chatbot → LangChain Tool → Doctor Database → Slot Engine → Appointment Database
+
+---
+
+# 📌 Resume-Ready Highlights
+
+* Built AI-assisted healthcare chatbot for automated appointment booking and rescheduling
+* Implemented doctor slot validation and symptom-based doctor recommendation
+* Designed secure full-stack architecture with PostgreSQL transaction safety
+
+---
+
+# 🙌 Acknowledgements
+
+Built using React, Node.js, Express, PostgreSQL, and LangChain.
