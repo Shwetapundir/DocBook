@@ -13,6 +13,7 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ChatPage from "./pages/ChatPage";
+import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import "./index.css";
 
 const App = () => (
@@ -20,6 +21,7 @@ const App = () => (
     <AuthProvider>
       <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Navbar />
+      <ChatbotWidget />
       <Routes>
         <Route path="/" element={<Navigate to="/doctors" replace />} />
         <Route path="/doctors" element={<DoctorListPage />} />

@@ -78,3 +78,36 @@ CREATE TRIGGER trg_appointments_updated_at BEFORE UPDATE ON appointments FOR EAC
 INSERT INTO users (full_name, email, password_hash, role)
 VALUES ('System Admin', 'admin@docbook.com', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj6o8k7WL6Oy', 'admin')
 ON CONFLICT (email) DO NOTHING;
+
+-- ─── AI Chatbot Tables ──────────────────────────────────────────────────────
+-- Each patient gets one active conversation at a time.
+-- Stored separately from doctor-patient chat (conversations / messages tables).
+
+CREATE TABLE IF NOT EXISTS chatbot_conversations (
+  id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id    UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title      VARCHAR(255) NOT NULL DEFAULT 'AI Health Assistant',
+  is_active  BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS chatbot_messages (
+  id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  conversation_id UUID NOT NULL REFERENCES chatbot_conversations(id) ON DELETE CASCADE,
+  role            VARCHAR(20) NOT NULL CHECK (role IN ('user', 'assistant')),
+  content         TEXT NOT NULL,
+  created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chatbot_conv_user  ON chatbot_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_chatbot_msgs_conv  ON chatbot_messages(conversation_id);
+
+-- Conversation state for multi-turn flows (reschedule / book appointment)
+-- Added via ALTER so this file is safe to re-run on existing databases
+ALTER TABLE chatbot_conversations ADD COLUMN IF NOT EXISTS state JSONB NOT NULL DEFAULT '{}';
+
+DROP TRIGGER IF EXISTS trg_chatbot_conv_updated_at ON chatbot_conversations;
+CREATE TRIGGER trg_chatbot_conv_updated_at
+  BEFORE UPDATE ON chatbot_conversations
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at();

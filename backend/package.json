@@ -8,6 +8,8 @@
     "migrate": "node config/migrate.js"
   },
   "dependencies": {
+    "@langchain/core": "^1.1.32",
+    "@langchain/groq": "^1.1.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -17,7 +19,8 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
-    "pg": "^8.11.0"
+    "pg": "^8.11.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

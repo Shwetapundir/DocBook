@@ -34,6 +34,24 @@ export const adminAPI = {
   getAppointments:   (params) => API.get("/admin/appointments", { params }),
 };
 
+export const chatbotAPI = {
+  // Get or create the active AI conversation for this user
+  getOrCreateConversation: () =>
+    API.post('/chatbot/conversations'),
+
+  // Start a brand-new AI conversation (archives the previous one)
+  newConversation: () =>
+    API.post('/chatbot/conversations/new'),
+
+  // Fetch message history for a conversation
+  getMessages: (conversationId) =>
+    API.get(`/chatbot/conversations/${conversationId}/messages`),
+
+  // Send a user message and receive the AI reply
+  sendMessage: (conversationId, message) =>
+    API.post(`/chatbot/conversations/${conversationId}/messages`, { message }),
+};
+
 export const chatAPI = {
   // Get all conversations for logged-in user
   getConversations: () =>
