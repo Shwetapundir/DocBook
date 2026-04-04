@@ -49,6 +49,7 @@ const getDoctors = async (req, res, next) => {
     query += " ORDER BY u.full_name";
 
     const result = await pool.query(query, params);
+    console.log(result.rows)
     res.json({ success: true, count: result.rows.length, doctors: result.rows });
   } catch (err) { next(err); }
 };

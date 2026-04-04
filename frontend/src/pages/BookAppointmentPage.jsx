@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doctorAPI, appointmentAPI } from "../api/services";
+import { doctorAPI, paymentAPI } from "../api/services";
 import toast from "react-hot-toast";
 
 const DAY_NAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -43,17 +43,16 @@ const BookAppointmentPage = () => {
     if (!selectedDate || !selectedSlot) return toast.error("Please select a date and time slot");
     setBooking(true);
     try {
-      await appointmentAPI.book({
+      const res = await paymentAPI.createCheckoutSession({
         doctor_id: id,
         appointment_date: selectedDate,
         start_time: selectedSlot.start_time,
         reason
       });
-      toast.success("Appointment booked successfully!");
-      navigate("/patient/dashboard");
+      // Redirect to Stripe hosted checkout
+      window.location.href = res.data.url;
     } catch (err) {
-      toast.error(err.response?.data?.message || "Booking failed");
-    } finally {
+      toast.error(err.response?.data?.message || "Could not initiate payment");
       setBooking(false);
     }
   };
@@ -176,9 +175,9 @@ const BookAppointmentPage = () => {
         disabled={!selectedSlot || booking}
       >
         {booking ? (
-          <><span className="btn-spinner"></span> Booking...</>
+          <><span className="btn-spinner"></span> Redirecting to payment...</>
         ) : (
-          "Confirm Appointment →"
+          "Pay & Book →"
         )}
       </button>
 

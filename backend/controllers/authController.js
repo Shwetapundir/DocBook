@@ -57,6 +57,7 @@ const login = async (req, res, next) => {
       return res.status(403).json({ success: false, message: "Account is deactivated" });
 
     const token = signToken(user);
+    console.log("token",token)
 
     res.json({
       success: true,

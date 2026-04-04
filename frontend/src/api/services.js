@@ -52,6 +52,11 @@ export const chatbotAPI = {
     API.post(`/chatbot/conversations/${conversationId}/messages`, { message }),
 };
 
+export const paymentAPI = {
+  createCheckoutSession: (data) => API.post("/payments/create-checkout-session", data),
+  verifyPayment: (sessionId) => API.get("/payments/verify", { params: { session_id: sessionId } }),
+};
+
 export const chatAPI = {
   // Get all conversations for logged-in user
   getConversations: () =>

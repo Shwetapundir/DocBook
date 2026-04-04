@@ -13,6 +13,8 @@ import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import DoctorProfilePage from "./pages/doctor/DoctorProfilePage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ChatPage from "./pages/ChatPage";
+import PaymentSuccessPage from "./pages/PaymentSuccessPage";
+import PaymentCancelPage from "./pages/PaymentCancelPage";
 import ChatbotWidget from "./components/chatbot/ChatbotWidget";
 import "./index.css";
 
@@ -67,6 +69,17 @@ const App = () => (
         <Route path="/chat/:conversationId" element={
           <ProtectedRoute allowedRoles={["patient", "doctor"]}>
             <ChatPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/payment/success" element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <PaymentSuccessPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/payment/cancel" element={
+          <ProtectedRoute allowedRoles={["patient"]}>
+            <PaymentCancelPage />
           </ProtectedRoute>
         } />
         
