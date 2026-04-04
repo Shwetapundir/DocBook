@@ -30,6 +30,18 @@ A full-stack healthcare web application that enables patients to discover doctor
 * Real-time slot availability checking
 * Double-booking prevention using PostgreSQL transactions
 * Appointment lifecycle tracking (**Pending → Confirmed → Completed**)
+* Payment required before appointment is confirmed (Stripe Checkout)
+
+---
+
+## 💳 Payment Gateway (Stripe)
+
+* Stripe Checkout integration for secure online payments
+* Consultation fee charged in INR before appointment is created
+* Stripe webhook verifies payment and auto-creates the appointment on success
+* Payment verification page shows confirmed appointment details
+* Cancellation page with retry flow — no charge if payment is abandoned
+* Payment records stored in `payments` table with status tracking (`pending`, `paid`, `failed`, `refunded`)
 
 ---
 
@@ -91,6 +103,7 @@ A full-stack healthcare web application that enables patients to discover doctor
 | Database       | PostgreSQL                    |
 | Authentication | JWT, Bcrypt                   |
 | AI Integration | LangChain / LLM               |
+| Payment        | Stripe Checkout               |
 | Styling        | Custom CSS                    |
 | Real-time      | Polling (3s interval)         |
 
@@ -158,12 +171,16 @@ DB_USER=postgres
 DB_PASSWORD=your_postgres_password
 JWT_SECRET=your_super_secret_jwt_key
 JWT_EXPIRES_IN=7d
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret
+FRONTEND_URL=http://localhost:3000
 ```
 
-Run migration:
+Run migrations:
 
 ```bash
 node config/migrate.js
+node config/migrate_payments.js
 ```
 
 Start backend:
@@ -219,6 +236,12 @@ Password: `Admin@123`
 * View appointments
 * Cancel / update status
 
+## Payments
+
+* Create Stripe Checkout session
+* Stripe webhook (payment confirmation + appointment creation)
+* Verify payment by session ID
+
 ## Chat
 
 * Conversations
@@ -238,6 +261,7 @@ Password: `Admin@123`
 * doctor_profiles
 * availability
 * appointments
+* payments
 * conversations
 * messages
 
@@ -257,10 +281,22 @@ Password: `Admin@123`
 
 # 💡 AI Chatbot Architecture
 
-Patient → Chatbot → LangChain Tool → Doctor Database → Slot Engine → Appointment Database
+Patient → Chatbot → LangChain Tool → Doctor Database → Slot Engine → Stripe Checkout → Webhook → Appointment Database
+
+---
+
+# 🔄 Payment Flow
+
+1. Patient selects a doctor and time slot
+2. Frontend calls `/api/payments/create-checkout-session`
+3. Backend validates the slot and creates a Stripe Checkout session
+4. Patient is redirected to Stripe-hosted payment page
+5. On success, Stripe fires a webhook → backend confirms payment and creates the appointment
+6. Patient lands on `/payment/success?session_id=...` — payment is verified and appointment details are shown
+7. On cancel, patient lands on `/payment/cancel` — no charge, no appointment created
 
 ---
 
 # 🙌 Acknowledgements
 
-Built using React, Node.js, Express, PostgreSQL, and LangChain.
+Built using React, Node.js, Express, PostgreSQL, LangChain, and Stripe.
